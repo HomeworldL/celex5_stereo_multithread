@@ -1,0 +1,204 @@
+%% 初始参数
+q = [-53.523;17.257;101.814;-5.443;90.000;-8.524];
+theta1 = q(1);
+theta2 = q(2);
+theta3 = q(3);
+theta4 = q(4);
+theta5 = q(5);
+theta6 = q(6);
+
+% theta1 = 0;
+% theta2 = 0;
+% theta3 = 0;
+% theta4 = 0;
+% theta5 = 0;
+% theta6 = 0;
+%% DH参数
+global Manipulator_para p0 z0 
+p0 = [0,0,0]';  %基座坐标
+z0 = [0,0,1]';  %基座z轴方向
+
+%syms theta1 theta2 theta3 theta4 theta5 theta6
+%thetad=[0,-90,0,90,0,0];
+
+Manipulator_para.link1.DH.a = 0;
+Manipulator_para.link1.DH.alpha = 0;
+Manipulator_para.link1.DH.d = 121.5-23;
+Manipulator_para.link1.DH.theta = 0;
+
+Manipulator_para.link2.DH.a = 0;
+Manipulator_para.link2.DH.alpha = 90;
+Manipulator_para.link2.DH.d = 0;       
+Manipulator_para.link2.DH.theta = theta1;
+
+Manipulator_para.link3.DH.a = 408;
+Manipulator_para.link3.DH.alpha = 180;
+Manipulator_para.link3.DH.d = 140.5;   %0
+Manipulator_para.link3.DH.theta = theta2;
+
+Manipulator_para.link4.DH.a = 376;
+Manipulator_para.link4.DH.alpha = 180;
+Manipulator_para.link4.DH.d = 121.5;
+Manipulator_para.link4.DH.theta = theta3;
+
+Manipulator_para.link5.DH.a = 0;   %0
+Manipulator_para.link5.DH.alpha = -90;
+Manipulator_para.link5.DH.d = 102.5;
+Manipulator_para.link5.DH.theta = theta4;
+
+Manipulator_para.link6.DH.a = 0;
+Manipulator_para.link6.DH.alpha = 90;
+Manipulator_para.link6.DH.d = 102.5;
+Manipulator_para.link6.DH.theta = theta5;
+
+Manipulator_para.link7.DH.a = 0;
+Manipulator_para.link7.DH.alpha = 0;
+Manipulator_para.link7.DH.d = 94;   %根据实际基座再改
+Manipulator_para.link7.DH.theta = theta6;
+
+
+%% DH参数提取
+DH1.theta = 0;
+DH1.alpha = 0;
+DH1.a     = Manipulator_para.link1.DH.a;
+DH1.d     = Manipulator_para.link1.DH.d;
+
+DH2.theta = theta1;
+DH2.alpha = Manipulator_para.link2.DH.alpha;
+DH2.a     = Manipulator_para.link2.DH.a;
+DH2.d     = Manipulator_para.link2.DH.d;
+
+DH3.theta = theta2+90;
+DH3.alpha = Manipulator_para.link3.DH.alpha;
+DH3.a     = Manipulator_para.link3.DH.a;
+DH3.d     = Manipulator_para.link3.DH.d;
+
+DH4.theta = theta3;
+DH4.alpha = Manipulator_para.link4.DH.alpha;
+DH4.a     = Manipulator_para.link4.DH.a;
+DH4.d     = Manipulator_para.link4.DH.d;
+
+DH5.theta = theta4-90;
+DH5.alpha = Manipulator_para.link5.DH.alpha;
+DH5.a     = Manipulator_para.link5.DH.a;
+DH5.d     = Manipulator_para.link5.DH.d;
+
+DH6.theta = theta5;
+DH6.alpha = Manipulator_para.link6.DH.alpha;
+DH6.a     = Manipulator_para.link6.DH.a;
+DH6.d     = Manipulator_para.link6.DH.d;
+
+DH7.theta = theta6;
+DH7.alpha = Manipulator_para.link7.DH.alpha;
+DH7.a     = Manipulator_para.link7.DH.a;
+DH7.d     = Manipulator_para.link7.DH.d;
+
+
+%% 旋转矩阵&偏移向量
+%1
+R1 = [cosd(DH1.theta) , -sind(DH1.theta)cosd(DH1.alpha) ,  sind(DH1.theta)sind(DH1.alpha);
+      sind(DH1.theta) ,  cosd(DH1.theta)cosd(DH1.alpha) , -cosd(DH1.theta)sind(DH1.alpha);
+      0      ,          sind(DH1.alpha)      ,            cosd(DH1.alpha)              ];
+D1 = [DH1.acosd(DH1.theta),DH1.asind(DH1.theta),DH1.d]';
+%2
+R2 = [cosd(DH2.theta) , -sind(DH2.theta)cosd(DH2.alpha) ,  sind(DH2.theta)sind(DH2.alpha);
+      sind(DH2.theta) ,  cosd(DH2.theta)cosd(DH2.alpha) , -cosd(DH2.theta)sind(DH2.alpha);
+      0      ,          sind(DH2.alpha)      ,            cosd(DH2.alpha)              ];
+D2 = [DH2.acosd(DH2.theta),DH2.asind(DH2.theta),DH2.d]';
+%3
+R3 = [cosd(DH3.theta) , -sind(DH3.theta)cosd(DH3.alpha) ,  sind(DH3.theta)sind(DH3.alpha);
+      sind(DH3.theta) ,  cosd(DH3.theta)cosd(DH3.alpha) , -cosd(DH3.theta)sind(DH3.alpha);
+      0      ,          sind(DH3.alpha)      ,            cosd(DH3.alpha)                ];
+D3 = [DH3.acosd(DH3.theta),DH3.asind(DH3.theta),DH3.d]';
+%4
+R4 = [cosd(DH4.theta) , -sind(DH4.theta)cosd(DH4.alpha) ,  sind(DH4.theta)sind(DH4.alpha);
+      sind(DH4.theta) ,  cosd(DH4.theta)cosd(DH4.alpha) , -cosd(DH4.theta)sind(DH4.alpha);
+      0      ,          sind(DH4.alpha)      ,            cosd(DH4.alpha)              ];
+D4 = [DH4.acosd(DH4.theta),DH4.asind(DH4.theta),DH4.d]';
+%5
+R5 = [cosd(DH5.theta) , -sind(DH5.theta)cosd(DH5.alpha) ,  sind(DH5.theta)sind(DH5.alpha);
+      sind(DH5.theta) ,  cosd(DH5.theta)cosd(DH5.alpha) , -cosd(DH5.theta)sind(DH5.alpha);
+      0      ,          sind(DH5.alpha)      ,             cosd(DH5.alpha)              ];
+D5 = [DH5.acosd(DH5.theta),DH5.asind(DH5.theta),DH5.d]';
+%6
+R6 = [cosd(DH6.theta) , -sind(DH6.theta)cosd(DH6.alpha) ,  sind(DH6.theta)sind(DH6.alpha);
+      sind(DH6.theta) ,  cosd(DH6.theta)cosd(DH6.alpha) , -cosd(DH6.theta)sind(DH6.alpha);
+      0      ,          sind(DH6.alpha)      ,            cosd(DH6.alpha)              ];
+D6 = [DH6.acosd(DH6.theta),DH6.asind(DH6.theta),DH6.d]';
+%7
+R7 = [cosd(DH7.theta) , -sind(DH7.theta)cosd(DH7.alpha) ,  sind(DH7.theta)sind(DH7.alpha);
+      sind(DH7.theta) ,  cosd(DH7.theta)cosd(DH7.alpha) , -cosd(DH7.theta)sind(DH7.alpha);
+      0      ,          sind(DH7.alpha)      ,            cosd(DH7.alpha)              ];
+D7 = [DH7.acosd(DH7.theta),DH7.asind(DH7.theta),DH7.d]';
+
+%% 始末坐标点&轴线方向
+% % p1 = D1;
+% % p2 = R1D2 + p1;
+% % p3 = R1R2D3 + p2;
+% % p4 = R1R2R3D4 + p3;
+% % p5 = R1R2R3R4D5 + p4;
+% % p6 = R1R2R3R4R5D6 + p5;
+% % p7 = R1R2R3R4R5R6D7 + p6;
+% % 
+% % z1 = R1z0;
+% % z2 = R2z1;
+% % z3 = R3z2;  错了
+% % z4 = R4z3;
+% % z5 = R5z4;
+% % z6 = R6z5;
+% % z7 = R7z6;
+%end
+
+H1=[R1,D1;zeros(1,3),1];
+H2=[R2,D2;zeros(1,3),1];
+H3=[R3,D3;zeros(1,3),1];
+H4=[R4,D4;zeros(1,3),1];
+H5=[R5,D5;zeros(1,3),1];
+H6=[R6,D6;zeros(1,3),1];
+H7=[R7,D7;zeros(1,3),1];
+
+H01  =H1;
+H02  =H1H2;
+H03  =H1H2H3;
+H04  =H1H2H3H4;
+H05  =H1H2H3H4H5;
+H06  =H1H2H3H4H5H6;
+H_end=H1H2H3H4H5H6H7;
+
+p1 = H01(13,4);
+p2 = H02(13,4);
+p3 = H03(13,4);
+p4 = H04(13,4);
+p5 = H05(13,4);
+p6 = H06(13,4);
+p7 = H_end(13,4);
+
+z1 = H01(13,3);
+z2 = H02(13,3);
+z3 = H03(13,3);
+z4 = H04(13,3);
+z5 = H05(13,3);
+z6 = H06(13,3);
+z7 = H_end(13,3);
+
+%% 雅克比矩阵
+Jv1=cross(z1,p7-p1);
+Jv2=cross(z2,p7-p2);
+Jv3=cross(z3,p7-p3);
+Jv4=cross(z4,p7-p4);
+Jv5=cross(z5,p7-p5);
+Jv6=cross(z6,p7-p6);
+Jw1=z1;
+Jw2=z2;
+Jw3=z3;
+Jw4=z4;
+Jw5=z5;
+Jw6=z6;
+J = [[Jv1,Jv2,Jv3,Jv4,Jv5,Jv6]1000;
+     Jw1,Jw2,Jw3,Jw4,Jw5,Jw6];
+ 
+s = J[0.5;1;0.5;1;0.5;1];
+v = s(13);
+w = s(46);
+[inv(H_end(13,13))v;inv(H_end(13,13))w]
+

@@ -1,0 +1,16 @@
+
+AuboInterfaceExample.tar.gz 是linux 平台基于C++ SDK的一个示例工程
+
+该工程使用QT Creator编写，适应linux32位和64位的平台。
+
+dependents 是示例依赖的一些库;
+dependents/robotSDK/inc 是SDK对应的头文件
+dependents/robotSDK/lib 是SDK库文件
+
+该文件下存放接口需要的头文件:
+
+1.元数据文件　　　　AuboRobotMetaType.h
+
+2.接口头文件　　　　serviceinterface.h
+
+example文件夹下是SDK使用示例
